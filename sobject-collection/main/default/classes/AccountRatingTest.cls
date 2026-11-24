@@ -18,11 +18,17 @@ private class AccountRatingTest {
         Assert.areEqual('Cold', byName.get('NoRevenue').Rating);
     }
 
-    @IsTest static void updateRecalculatesRating() {
-        Account a = new Account(Name = 'Acme', AnnualRevenue = 500);
+    @IsTest static void keepsRatingAlreadySet() {
+        Account a = new Account(Name = 'Sales', AnnualRevenue = 2000000, Rating = 'Cold');
         insert a;
+        Assert.areEqual('Cold', [SELECT Rating FROM Account WHERE Id = :a.Id].Rating);
+    }
+
+    @IsTest static void updateRatesWhenRatingBlank() {
+        Account a = new Account(Name = 'Acme', Rating = 'Warm');
+        insert a;
+        a.Rating = null;
         a.AnnualRevenue = 2000000;
-        a.Rating = 'Cold';
         update a;
         Assert.areEqual('Hot', [SELECT Rating FROM Account WHERE Id = :a.Id].Rating);
     }

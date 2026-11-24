@@ -7,7 +7,9 @@ public with sharing class AccountRating {
 
     public static void apply(List<Account> accounts) {
         for (Account a : accounts) {
-            a.Rating = ratingFor(a.AnnualRevenue);
+            if (String.isBlank(a.Rating)) {
+                a.Rating = ratingFor(a.AnnualRevenue);
+            }
         }
     }
 }
